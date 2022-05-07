@@ -10,7 +10,7 @@ import {
 	useState,
 } from "react";
 import styled from "styled-components";
-import { BufferGeometry, Mesh } from "three";
+import { BufferGeometry, Color, Mesh } from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -90,18 +90,11 @@ const CameraController = () => {
 
 type SceneProps = {
 	model: BufferGeometry;
+	color: number;
 };
 
-const Scene: FC<SceneProps> = ({ model }) => {
+const Scene: FC<SceneProps> = ({ model, color }) => {
 	const mesh = useRef<Mesh>();
-	const [color, setColor] = useState(0);
-
-	useEffect(() => {
-		// @ts-ignore
-		window.STUDIO_SET_COLOR = (color: string) => {
-			setColor(parseInt(color));
-		};
-	}, []);
 
 	return (
 		<Bounds fit clip damping={6} margin={1.2}>
@@ -116,23 +109,44 @@ const Scene: FC<SceneProps> = ({ model }) => {
 	);
 };
 
+type ColorArray = [r: number, g: number, b: number];
+
 type ModelViewProps = {
 	model: BufferGeometry;
 };
 
-const ModelView: FC<ModelViewProps> = ({ model }) => (
-	<Canvas
-		camera={{
-			fov: 75,
-			position: [5, 5, 5],
-		}}
-	>
-		<Suspense fallback={null}>
-			<Scene model={model} />
-			<CameraController />
-		</Suspense>
-	</Canvas>
-);
+const ModelView: FC<ModelViewProps> = ({ model }) => {
+	const [color, setColor] = useState(0xaaaaaa);
+
+	useEffect(() => {
+		// @ts-ignore
+		window.STUDIO_SET_COLOR = (color: string) => {
+			setColor(parseInt(color));
+		};
+	}, []);
+
+	const backgroundColor = useMemo(() => {
+		const bgColor = new Color(color);
+		const tintColor = new Color(0xeeeeee);
+
+		return new Color().addColors(bgColor, tintColor).toArray() as ColorArray;
+	}, [color]);
+
+	return (
+		<Canvas
+			camera={{
+				fov: 75,
+				position: [5, 5, 5],
+			}}
+		>
+			<Suspense fallback={null}>
+				<color attach="background" args={backgroundColor} />
+				<Scene model={model} color={color} />
+				<CameraController />
+			</Suspense>
+		</Canvas>
+	);
+};
 
 const StudioPage = () => {
 	const [model, setModel] = useState<BufferGeometry>();

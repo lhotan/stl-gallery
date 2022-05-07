@@ -47,7 +47,7 @@
 			"thumbnail": "",
 			"lowResThumbnail": "",
 			"path": "benchy.stl",
-			"color": "0xffffff"
+			"color": "0xaaf03a"
 		},
 		{
 			"title": "Benchy benchy",
@@ -61,7 +61,7 @@
 			"thumbnail": "",
 			"lowResThumbnail": "",
 			"path": "benchy.stl",
-			"color": "0x0f0f0f"
+			"color": "0x0f000f"
 		},
 		{
 			"title": "Lorem Ipsum",
@@ -75,7 +75,7 @@
 			"thumbnail": "",
 			"lowResThumbnail": "",
 			"path": "benchy.stl",
-			"color": "0xffffff"
+			"color": "0xf0af0f"
 		},
 		{
 			"title": "3D Printer Stress Test",

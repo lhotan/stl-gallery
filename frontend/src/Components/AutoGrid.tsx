@@ -1,14 +1,6 @@
 import { debounce, reverse, times, uniqueId } from "lodash";
 import { FC, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-//@ts-ignore
-import thumb from "./thumb.mp4";
-
-const data = times(40, (i) => ({
-	id: uniqueId(),
-	title: `Fancy model ${i}`,
-	thumbnail: thumb,
-}));
 
 const StyledList = styled.ul`
 	list-style-type: none;
@@ -20,7 +12,7 @@ const StyledList = styled.ul`
 
 	min-height: 60rem;
 
-	gap: 0.5rem;
+	gap: 0.75rem;
 	padding: 1rem 1rem;
 	align-items: center;
 `;
@@ -29,6 +21,7 @@ type GalleryItem = {
 	id: string;
 	title: string;
 	thumbnail: string;
+	color: string;
 };
 
 const AutoGrid = () => {
@@ -101,7 +94,7 @@ const AutoGrid = () => {
 						return <div />;
 					}
 
-					const { id, thumbnail, title } = item;
+					const { id, thumbnail, title, color } = item;
 
 					return (
 						<AutoGridItem
@@ -111,6 +104,7 @@ const AutoGrid = () => {
 							isOpen={openedDesignId === id}
 							title={title}
 							thumbnail={thumbnail}
+							color={color}
 						/>
 					);
 				})}
@@ -124,16 +118,15 @@ const ContentTitle = styled.p`
 	right: 1rem;
 	font-size: 1.5rem;
 	font-weight: 400;
-	color: white;
-	text-shadow: 1px 1px 10px grey;
+	color: black;
 `;
 
-const StyledListItem = styled.li<{ $isOpen: boolean }>`
-	background-color: orange;
+const StyledListItem = styled.li<{ $isOpen: boolean; $shadowColor: string }>`
 	height: 100%;
 
+	border-radius: 8px;
+
 	&:first-of-type {
-		background-color: green;
 		grid-column: 1 / 3;
 		grid-row: 1 / 3;
 
@@ -141,7 +134,10 @@ const StyledListItem = styled.li<{ $isOpen: boolean }>`
 			font-size: 2rem;
 		}
 	}
-	box-shadow: 0 0 10px purple;
+
+	${({ $shadowColor }) => css`
+		box-shadow: 0 0 4px ${$shadowColor};
+	`}
 
 	transition: all 200ms linear;
 
@@ -191,6 +187,7 @@ const GridThumbnail = styled.video`
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	border-radius: 8px;
 `;
 
 type AutoGridItemProps = {
@@ -199,6 +196,7 @@ type AutoGridItemProps = {
 	title: string;
 	thumbnail: string;
 	isOpen: boolean;
+	color: string;
 };
 
 const AutoGridItem: FC<AutoGridItemProps> = ({
@@ -207,6 +205,7 @@ const AutoGridItem: FC<AutoGridItemProps> = ({
 	thumbnail,
 	onClick,
 	isOpen,
+	color,
 }) => {
 	const itemRef = useRef<HTMLLIElement>();
 	const backgroundRef = useRef<HTMLDivElement>();
@@ -318,6 +317,7 @@ const AutoGridItem: FC<AutoGridItemProps> = ({
 			});
 	};
 
+	console.log(color);
 	return (
 		<>
 			{isOpen && (
@@ -329,6 +329,7 @@ const AutoGridItem: FC<AutoGridItemProps> = ({
 				ref={itemRef}
 				onClick={onClick}
 				$isOpen={isOpen}
+				$shadowColor={`#${color.split("0x").pop()}`}
 				onPointerEnter={() => setIsHover(true)}
 				onPointerLeave={() => setIsHover(false)}
 			>

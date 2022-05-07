@@ -72,7 +72,7 @@ const createModelFrames = async (
 	console.log(`[model] Done creating thumbnail for ${id}`);
 	console.log(`[model] Stitching thumbnail for ${id}`);
 	await exec(`ffmpeg -framerate 30 -pattern_type glob -i './frames/${id}/*.png' \
-  -c:v libx264 -pix_fmt yuv420p ./frames/${id}/thumbnail.mp4`);
+  -c:v libx264 -crf 15 -pix_fmt yuv420p ./frames/${id}/thumbnail.mp4`);
 	console.log(`[model] Done stitching thumbnail for ${id}`);
 
 	const lowResThumbnail = await readFile(`./frames/${id}/00000000.png`);
