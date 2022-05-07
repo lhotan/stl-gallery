@@ -1,0 +1,151 @@
+{
+	"models": [
+		{
+			"title": "A benchy",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xff0000"
+		},
+		{
+			"title": "This a benchy too",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x00ff00"
+		},
+		{
+			"title": "Benchy model",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x0000ff"
+		},
+		{
+			"title": "Cool benchy model",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xff0000"
+		},
+		{
+			"title": "Much color, wow",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x00ffff"
+		},
+		{
+			"title": "Benchy model #idk",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xff00ff"
+		},
+		{
+			"title": "Model of benchy",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xffffff"
+		},
+		{
+			"title": "Benchy benchy",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x0FA0FE"
+		},
+		{
+			"title": "Stock 3D model",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x0f0f0f"
+		},
+		{
+			"title": "Lorem Ipsum",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xff0000"
+		},
+		{
+			"title": "Test bench model",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xffffff"
+		},
+		{
+			"title": "3D Printer Stress Test",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xff9311"
+		},
+		{
+			"title": "I like printers",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x93f3a2"
+		},
+		{
+			"title": "Potato salad",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xff0000"
+		},
+		{
+			"title": "Nice",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x0000ee"
+		},
+		{
+			"title": "Nice model 16",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x94ff00"
+		},
+		{
+			"title": "BENCHY",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xfad3ff"
+		},
+		{
+			"title": "BENCHY SUPREME",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xF0F33F"
+		},
+		{
+			"title": "Benchimus Maximus",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x00ff00"
+		},
+		{
+			"title": "The Benchy",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0xff33bb"
+		},
+		{
+			"title": "Super Benchy",
+			"thumbnail": "",
+			"lowResThumbnail": "",
+			"path": "benchy.stl",
+			"color": "0x3399FF"
+		}
+	]
+}

@@ -1,4 +1,5 @@
 node_modules
 frames
 build
-yarn-error.log
+sqlite.db
+.DS_Store
