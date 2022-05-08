@@ -29,13 +29,6 @@ const StudioContent = styled.div`
 	align-items: center;
 `;
 
-const StudioControls = styled.div`
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	visibility: hidden;
-`;
-
 const CameraController = () => {
 	const { camera, gl } = useThree();
 	const [originalCameraAngle, setOriginalCameraAngle] = useState<number>();
@@ -148,7 +141,7 @@ const ModelView: FC<ModelViewProps> = ({ model }) => {
 	);
 };
 
-const StudioPage = () => {
+export const StudioPage = () => {
 	const [model, setModel] = useState<BufferGeometry>();
 	const inputRef = useRef<HTMLInputElement>();
 
@@ -188,5 +181,3 @@ const StudioPage = () => {
 		</StudioContainer>
 	);
 };
-
-export default StudioPage;

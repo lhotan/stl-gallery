@@ -1,3 +1,5 @@
+import styled, { css } from "styled-components";
+
 const ContentBackground = styled.div`
 	position: absolute;
 	top: 0;
@@ -75,3 +77,11 @@ const StyledListItem = styled.li<{ $isOpen: boolean; $shadowColor: string }>`
 					}
 			  `}
 `;
+
+export {
+	ContentBackground,
+	ContentTitle,
+	GridContent,
+	GridThumbnail,
+	StyledListItem,
+};

@@ -1,3 +1,13 @@
+import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { getContentKeyframes, getSlideKeyframes } from "./keyframes";
+import {
+	ContentBackground,
+	ContentTitle,
+	GridContent,
+	GridThumbnail,
+	StyledListItem,
+} from "./styled";
+
 type ModelGridItemProps = {
 	onClick: () => void;
 	isOpen: boolean;

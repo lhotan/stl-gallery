@@ -1,9 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import styled from "styled-components";
-import ModelGrid from "./Components/ModelGrid";
-import MainPage from "./Pages/MainPage";
-import StudioPage from "./Pages/StudioPage";
-import profilePicture from "./profile.png";
+import { MainPage } from "./Pages/MainPage";
+import { StudioPage } from "./Pages/StudioPage";
 
 const App = () => (
 	<Router>

@@ -1,6 +1,6 @@
-import { debounce, reverse, times, uniqueId } from "lodash";
-import { FC, ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import styled, { css } from "styled-components";
+import { debounce, times } from "lodash";
+import { useEffect, useRef, useState } from "react";
+import { ModelGridItem } from "../ModelGridItem";
 import { StyledList } from "./styled";
 
 type GalleryItem = {
@@ -80,7 +80,7 @@ export const ModelGrid = () => {
 					const { id } = item;
 
 					return (
-						<AutoGridItem
+						<ModelGridItem
 							key={id}
 							onClick={handleItemClick(id)}
 							data={item}
