@@ -7,6 +7,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build:frontend": "yarn workspace frontend build",
 		"build:backend": "yarn workspace backend build",
+		"start:frontend": "yarn workspace frontend start",
+		"start:backend": "yarn workspace backend start",
 		"build:app": "node scripts/build.js"
 	},
 	"workspaces": [

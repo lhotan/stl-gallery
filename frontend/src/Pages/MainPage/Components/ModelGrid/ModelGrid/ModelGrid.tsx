@@ -1,5 +1,5 @@
 import { debounce, times } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ModelGridItem } from "../ModelGridItem";
 import { StyledList } from "./styled";
 
@@ -59,37 +59,22 @@ export const ModelGrid = () => {
 		setIsResizing(false);
 	}, 250);
 
-	const handleItemClick = (identifier: string) => () => {
-		if (identifier === openedDesignId) {
-			setOpenedDesignId(undefined);
-		} else {
-			setOpenedDesignId(identifier);
-		}
-	};
+	const gridItems = useMemo(
+		() =>
+			times(gridItemCount, (i) => {
+				const item = data?.[i];
+				if (!item) {
+					return <div key={`${i}`} />;
+				}
 
-	return (
-		<StyledList ref={gridRef}>
-			{!isResizing &&
-				times(gridItemCount, (i) => {
-					const item = data?.[i];
+				const { id } = item;
 
-					if (!item) {
-						return <div />;
-					}
-
-					const { id } = item;
-
-					return (
-						<ModelGridItem
-							key={id}
-							onClick={handleItemClick(id)}
-							data={item}
-							isOpen={openedDesignId === id}
-						/>
-					);
-				})}
-		</StyledList>
+				return <ModelGridItem key={id} data={item} />;
+			}),
+		[gridItemCount]
 	);
+
+	return <StyledList ref={gridRef}>{!isResizing && gridItems}</StyledList>;
 };
 
 export default ModelGrid;

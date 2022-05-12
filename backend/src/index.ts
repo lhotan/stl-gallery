@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 import createModelFrames from "./model/createModelFrames";
 
 var cors = require("cors");
-rmSync("./sqlite.db");
+//rmSync("./sqlite.db");
 const db = new sqlite3.Database("./sqlite.db");
 
 process.setMaxListeners(Infinity);
@@ -48,7 +48,7 @@ const defaultData = defaultDataJson.models.map((model) => {
 	};
 });
 
-db.serialize(() => {
+/* db.serialize(() => {
 	db.run(
 		"CREATE TABLE models (id TEXT, title TEXT, model BLOB, thumbnail BLOB, lowResThumbnail BLOB, color TEXT)"
 	);
@@ -64,7 +64,7 @@ db.serialize(() => {
 
 	stmt.finalize();
 });
-
+ */
 app.use(cors());
 
 app.get("/models", (req, res) => {

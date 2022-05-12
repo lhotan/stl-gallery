@@ -19,16 +19,13 @@ const getSlideKeyframes = ({
 	},
 ];
 
-const getContentKeyframes = () => ([
+const getContentKeyframes = () => [
 	{
 		opacity: 0,
 	},
 	{
 		opacity: 1,
 	},
-])
+];
 
-export {
-  getSlideKeyframes,
-  getContentKeyframes
-}
+export { getSlideKeyframes, getContentKeyframes };
