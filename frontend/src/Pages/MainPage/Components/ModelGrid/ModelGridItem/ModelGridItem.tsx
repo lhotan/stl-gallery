@@ -1,14 +1,6 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+import { FC, useEffect, useRef, useState } from "react";
 import { useApplicationContext } from "../../../ApplicationContext";
-import { getContentKeyframes, getSlideKeyframes } from "./keyframes";
-import {
-	ContentBackground,
-	ContentTitle,
-	GridContent,
-	GridThumbnail,
-	StyledListItem,
-} from "./styled";
+import { ContentTitle, GridThumbnail, StyledListItem } from "./styled";
 
 type ModelGridItemProps = {
 	data: {
@@ -25,44 +17,30 @@ export const ModelGridItem: FC<ModelGridItemProps> = ({
 	const itemRef = useRef<HTMLLIElement>();
 
 	const thumbnailRef = useRef<HTMLVideoElement>();
-	const [isOpen, setIsOpen] = useState(false);
 
-	const [animationInProgress, setAnimationInProgress] = useState(false);
 	const [isHover, setIsHover] = useState(false);
 
-	const { showModelWindow } = useApplicationContext();
+	const { showModelWindow, windowOpen } = useApplicationContext();
+
+	useEffect(() => {
+		if (isHover) {
+			thumbnailRef.current.play();
+		} else {
+			thumbnailRef.current.pause();
+		}
+	}, [isHover]);
 
 	const handleContentOpen = (event) => {
 		event.preventDefault();
 
 		showModelWindow({ item: itemRef.current });
-
-		console.log("opening content");
-		if (!animationInProgress) {
-			setIsOpen(() => true);
-			//setAnimationInProgress(() => true);
-			console.log(isOpen);
-			//	await animateWindowOpen();
-			console.log(isOpen);
-			//setAnimationInProgress(() => false);
-		}
-	};
-
-	const handleContentClose = async () => {
-		console.log("closign content");
-		if (!animationInProgress) {
-			setAnimationInProgress(() => true);
-			//await animateWindowClose();
-			setAnimationInProgress(() => false);
-			setIsOpen(() => false);
-		}
 	};
 
 	return (
 		<StyledListItem
 			ref={itemRef}
 			onClick={handleContentOpen}
-			$isOpen={isOpen}
+			$isOpen={windowOpen}
 			$shadowColor={`#${color.split("0x").pop()}`}
 			onPointerEnter={() => setIsHover(true)}
 			onPointerLeave={() => setIsHover(false)}

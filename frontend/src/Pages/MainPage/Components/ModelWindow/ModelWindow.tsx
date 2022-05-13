@@ -45,16 +45,11 @@ export const ModelWindow: FC<ModelWindowProps> = ({
 			const background = backgroundRef.current;
 			const content = contentRef.current;
 
-			console.log(backgroundRef.current, contentRef.current);
-			const r = background.animate(slideKeyframes, {
+			await background.animate(slideKeyframes, {
 				fill: "forwards",
 				delay: 100,
 				duration: 400,
 			}).finished;
-
-			console.log(r);
-			const rr = await r;
-			console.log(rr);
 
 			await content.animate(contentKeyframes, {
 				fill: "forwards",

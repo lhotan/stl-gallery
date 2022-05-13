@@ -1,22 +1,5 @@
-import {
-	createContext,
-	FC,
-	ReactNode,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
+import { createContext, FC, ReactNode, useContext, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-	getContentKeyframes,
-	getSlideKeyframes,
-} from "./Components/ModelGrid/ModelGridItem/keyframes";
-import {
-	ContentBackground,
-	GridContent,
-} from "./Components/ModelGrid/ModelGridItem/styled";
 import { ModelWindow } from "./Components/ModelWindow";
 
 type ShowModelWindowArgs = {
@@ -25,10 +8,12 @@ type ShowModelWindowArgs = {
 
 type ContextType = {
 	showModelWindow: (args: ShowModelWindowArgs) => Promise<void>;
+	windowOpen: boolean;
 };
 
 const ApplicationContext = createContext<ContextType>({
 	showModelWindow: undefined,
+	windowOpen: undefined,
 });
 
 const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
@@ -62,6 +47,7 @@ const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
 		<ApplicationContext.Provider
 			value={{
 				showModelWindow: handleWindowShow,
+				windowOpen,
 			}}
 		>
 			{children}
