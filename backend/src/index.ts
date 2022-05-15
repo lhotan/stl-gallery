@@ -8,19 +8,18 @@ import {
 	rmSync,
 	writeFileSync,
 } from "fs";
+import { Op } from "sequelize";
 import sqlite3 from "sqlite3";
 import { Stream } from "stream";
 import { v4 as uuidv4 } from "uuid";
 import createModelFrames from "./model/createModelFrames";
+import ModelEntry from "./Models/ModelEntry";
+import ThumbnailGenerator from "./ThumbnailGenerator";
 
 var cors = require("cors");
-//rmSync("./sqlite.db");
-const db = new sqlite3.Database("./sqlite.db");
-
-process.setMaxListeners(Infinity);
 
 const app = express();
-const port = 4444;
+const port = 8080;
 
 type DefaultData = {
 	models: {
@@ -32,117 +31,202 @@ type DefaultData = {
 	}[];
 };
 
-const defaultDataJson: DefaultData = JSON.parse(
-	readFileSync("./data/default.json").toString()
-);
-
-const defaultData = defaultDataJson.models.map((model) => {
-	const modelBlobs = readFileSync("./data/" + model.path);
-
-	return {
-		title: model.title,
-		models: modelBlobs,
-		thumbnail: undefined,
-		lowResThumbnail: undefined,
-		color: model.color,
-	};
-});
-
-/* db.serialize(() => {
-	db.run(
-		"CREATE TABLE models (id TEXT, title TEXT, model BLOB, thumbnail BLOB, lowResThumbnail BLOB, color TEXT)"
-	);
-
-	const stmt = db.prepare(
-		"INSERT INTO models(id,title,model,color) VALUES(?,?,?,?)"
-	);
-
-	defaultData.forEach((data) => {
-		const id = uuidv4();
-		stmt.run(id, data.title, data.models, data.color);
-	});
-
-	stmt.finalize();
-});
- */
 app.use(cors());
+app.use(express.static("static"));
 
-app.get("/models", (req, res) => {
-	db.all(
-		"SELECT id, title, model, lowResThumbnail, color FROM models",
-		(err, row) => {
-			res.json([
-				...row.map(({ id, title, lowResThumbnail, color }) => ({
-					id,
-					title,
-					thumbnail: lowResThumbnail.toString("base64"),
-					color,
-				})),
-			]);
-		}
+app.get("/init", async (req, res) => {
+	const defaultDataJson: DefaultData = JSON.parse(
+		readFileSync("./data/default.json").toString()
 	);
-});
 
-app.get("/thumbnail/:id", (req, res) => {
-	const id = req.params["id"];
+	const defaultData = defaultDataJson.models.map((model) => {
+		const modelBlobs = readFileSync("./data/" + model.path);
 
-	// sql injection 🎉
-	db.all(`SELECT thumbnail FROM models WHERE id = '${id}'`, (_, r) => {
-		const row = r[0];
-
-		const readStream = new Stream.PassThrough();
-		readStream.end(row.thumbnail);
-
-		res.set("Content-disposition", "attachment; filename=" + id + ".mp4");
-		res.set("Content-Type", "text/plain");
-
-		readStream.pipe(res);
+		return {
+			title: model.title,
+			models: modelBlobs,
+			thumbnail: undefined,
+			color: model.color,
+		};
 	});
+
+	await ModelEntry.sync({ force: true });
+	for await (const data of defaultData) {
+		await ModelEntry.create({
+			id: uuidv4(),
+			title: data.title,
+			model: data.models,
+			color: data.color,
+		});
+	}
+
+	res.send("DONE");
 });
 
-app.get("/model/:id", (req, res) => {
+app.get("/models", async (req, res) => {
+	const entries = await ModelEntry.findAll({
+		attributes: ["id", "title", "color", "thumbnail"],
+	});
+
+	const entriesWithB64Images = entries.map((entry) => ({
+		...entry.get(),
+		thumbnail: entry.get("thumbnail")?.toString("base64"),
+	}));
+
+	res.json(entriesWithB64Images);
+});
+
+app.get("/thumbnail/:id", async (req, res) => {
 	const id = req.params["id"];
 
-	// sql injection (for some reason I can't prepare statement with ID here)🎉
-	db.all(`SELECT title, model FROM models WHERE id = '${id}'`, (_, r) => {
-		const row = r[0];
+	const foundEntry = await ModelEntry.findOne({
+		attributes: ["videoThumbnail"],
+		where: {
+			id,
+		},
+	});
 
+	if (foundEntry) {
 		const readStream = new Stream.PassThrough();
-		readStream.end(row.model);
+
+		readStream.end(foundEntry.getDataValue("videoThumbnail"));
 
 		res.set("Content-disposition", "attachment; filename=" + id + ".stl");
 		res.set("Content-Type", "text/plain");
 
 		readStream.pipe(res);
+	} else {
+		res.sendStatus(404);
+	}
+});
+
+app.get("/model/:id", async (req, res) => {
+	const id = req.params["id"];
+
+	const foundEntry = await ModelEntry.findOne({
+		attributes: ["model"],
+		where: {
+			id,
+		},
 	});
+
+	if (foundEntry) {
+		const readStream = new Stream.PassThrough();
+
+		readStream.end(foundEntry.getDataValue("model"));
+
+		res.set("Content-disposition", "attachment; filename=" + id + ".stl");
+		res.set("Content-Type", "text/plain");
+
+		readStream.pipe(res);
+	} else {
+		res.sendStatus(404);
+	}
 });
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
 
+const thumbnailGenerator = new ThumbnailGenerator(
+	"http://localhost:3000/studio"
+);
+
 setTimeout(async () => {
-	const dbRows = await new Promise<any[]>((resolve) => {
-		db.all("SELECT id,model,thumbnail,color FROM models", (err, row) => {
-			resolve(row);
-		});
+	await thumbnailGenerator.intializeBrowser();
+
+	console.log("[THUMBNAIL] Checking if any thumbnails need to be created");
+
+	const entriesWithoutThumbnails = await ModelEntry.findAll({
+		attributes: ["id", "color", "title"],
+		where: {
+			thumbnail: null,
+		},
 	});
 
-	for await (const row of dbRows) {
-		if (!row.thumbnail) {
-			const { thumbnail, lowResThumbnail } = await createModelFrames(
-				row.id,
-				row.model,
-				row.color
-			);
+	for await (const entry of entriesWithoutThumbnails) {
+		console.log(
+			`[THUMBNAIL] Generating thumbnail for ${entry.getDataValue("title")}`
+		);
 
-			const stmt = db.prepare(
-				`UPDATE models SET thumbnail = ?, lowResThumbnail = ? WHERE id = ?;`
-			);
+		const modelEntry = await ModelEntry.findOne({
+			attributes: ["model"],
+			where: {
+				id: entry.getDataValue("id"),
+			},
+		});
 
-			stmt.run(thumbnail, lowResThumbnail, row.id);
+		const data = {
+			...entry.get(),
+			...modelEntry.get(),
+		};
 
-			stmt.finalize();
-		}
+		await thumbnailGenerator.uploadModel(data);
+		const thumbnail = await thumbnailGenerator.createThumbnail();
+		await ModelEntry.update(
+			{
+				thumbnail,
+			},
+			{
+				where: {
+					id: entry.getDataValue("id"),
+				},
+			}
+		);
+
+		console.log(
+			`[THUMBNAIL] Done thumbnail for ${entry.getDataValue("title")}`
+		);
+	}
+
+	console.log(
+		"[VIDEO THUMBNAIL] Checking if any video thumbnails need to be created"
+	);
+
+	const entriesWithoutVideoThumbnails = await ModelEntry.findAll({
+		attributes: ["id", "color", "title"],
+		where: {
+			videoThumbnail: null,
+		},
+	});
+
+	for await (const entry of entriesWithoutVideoThumbnails) {
+		console.log(
+			`[VIDEO THUMBNAIL] Generating video thumbnail for ${entry.getDataValue(
+				"title"
+			)}`
+		);
+
+		const modelEntry = await ModelEntry.findOne({
+			attributes: ["model"],
+			where: {
+				id: entry.getDataValue("id"),
+			},
+		});
+
+		const data = {
+			...entry.get(),
+			...modelEntry.get(),
+		};
+
+		await thumbnailGenerator.uploadModel(data);
+		const videoThumbnail = await thumbnailGenerator.createVideoThumbnail();
+
+		await ModelEntry.update(
+			{
+				videoThumbnail,
+			},
+			{
+				where: {
+					id: entry.getDataValue("id"),
+				},
+			}
+		);
+
+		console.log(
+			`[VIDEO THUMBNAIL] Done generating video thumbnail for ${entry.getDataValue(
+				"title"
+			)}`
+		);
 	}
 }, 2000);

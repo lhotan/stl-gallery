@@ -33,7 +33,7 @@ export const ModelGridItem: FC<ModelGridItemProps> = ({
 	const handleContentOpen = (event) => {
 		event.preventDefault();
 
-		showModelWindow({ item: itemRef.current });
+		showModelWindow({ openedItem: itemRef.current });
 	};
 
 	return (
@@ -54,7 +54,7 @@ export const ModelGridItem: FC<ModelGridItemProps> = ({
 				onClick={(event) => event.preventDefault()}
 			>
 				<source
-					src={`http://localhost:4444/thumbnail/${id}`}
+					src={`http://localhost:8080/thumbnail/${id}`}
 					type="video/mp4"
 				/>
 			</GridThumbnail>

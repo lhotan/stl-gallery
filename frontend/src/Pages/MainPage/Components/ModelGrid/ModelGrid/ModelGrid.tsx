@@ -1,28 +1,16 @@
 import { debounce, times } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useApplicationContext } from "../../../ApplicationContext";
 import { ModelGridItem } from "../ModelGridItem";
 import { StyledList } from "./styled";
-
-type GalleryItem = {
-	id: string;
-	title: string;
-	thumbnail: string;
-	color: string;
-};
 
 export const ModelGrid = () => {
 	const gridRef = useRef<HTMLUListElement | undefined>();
 	const [gridItemCount, setGridItemCount] = useState(0);
-	const [openedDesignId, setOpenedDesignId] = useState<string>();
 
 	const [isResizing, setIsResizing] = useState(false);
-	const [data, setData] = useState<GalleryItem[]>([]);
 
-	useEffect(() => {
-		fetch("http://localhost:4444/models").then((res) =>
-			res.json().then((data) => setData(data))
-		);
-	}, []);
+	const { galleryItems } = useApplicationContext();
 
 	useEffect(() => {
 		if (gridRef.current) {
@@ -62,7 +50,7 @@ export const ModelGrid = () => {
 	const gridItems = useMemo(
 		() =>
 			times(gridItemCount, (i) => {
-				const item = data?.[i];
+				const item = galleryItems?.[i];
 				if (!item) {
 					return <div key={`${i}`} />;
 				}
@@ -71,7 +59,7 @@ export const ModelGrid = () => {
 
 				return <ModelGridItem key={id} data={item} />;
 			}),
-		[gridItemCount]
+		[gridItemCount, galleryItems]
 	);
 
 	return <StyledList ref={gridRef}>{!isResizing && gridItems}</StyledList>;

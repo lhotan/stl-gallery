@@ -35,8 +35,15 @@ const CameraController = () => {
 	const [frames, setFrames] = useState<number>(0);
 
 	useEffect(() => {
+		// @ts-ignore
+		window.STUDIO_RESET_FRAMES = () => {
+			//@ts-ignore
+			window.STUDIO_RENDER_DONE = false;
+			handleFramesReset();
+		};
+
 		//@ts-ignore
-		window.STUDIO_RENDER_DONE = false;
+		window.STUDIO_RESET_FRAMES();
 	}, []);
 
 	const controls = useMemo(
@@ -56,6 +63,10 @@ const CameraController = () => {
 			handleCameraRotate();
 		};
 	}, [originalCameraAngle, frames]);
+
+	const handleFramesReset = () => {
+		setFrames(() => 0);
+	};
 
 	const handleCameraRotate = () => {
 		controls.autoRotate = true;
@@ -143,40 +154,32 @@ const ModelView: FC<ModelViewProps> = ({ model }) => {
 
 export const StudioPage = () => {
 	const [model, setModel] = useState<BufferGeometry>();
-	const inputRef = useRef<HTMLInputElement>();
 
-	const handleFileUpload = (file: File) => {
-		if (!file.name.toLowerCase().endsWith(".stl")) {
-			alert("NOT AN STL FILE!");
-			inputRef.current.value = "";
-		} else {
-			const loader = new STLLoader();
-			const filePath = URL.createObjectURL(file);
+	useEffect(() => {
+		// @ts-ignore
+		window.STUDIO_UPLOAD_MODEL = () => {
+			const input = document.createElement("input");
+			input.type = "file";
+			input.accept = ".stl";
 
-			loader.load(filePath, (model) => {
-				setModel(model);
-			});
-		}
-	};
+			input.onchange = (event: any) => {
+				const file = event.target.files[0];
+				const loader = new STLLoader();
+				const filePath = URL.createObjectURL(file);
+
+				loader.load(filePath, (model) => {
+					setModel(model);
+				});
+			};
+
+			input.click();
+		};
+	}, []);
 
 	return (
 		<StudioContainer>
 			<StudioContent>
-				{!model ? (
-					<div>
-						<label htmlFor="model">Upload stl file here: </label>
-						<input
-							ref={inputRef}
-							onChange={(e) => handleFileUpload(e.target.files[0])}
-							type="file"
-							id="model"
-							name="model"
-							accept=".stl"
-						/>
-					</div>
-				) : (
-					<ModelView model={model} />
-				)}
+				{!model ? <div>nothing to see here</div> : <ModelView model={model} />}
 			</StudioContent>
 		</StudioContainer>
 	);
