@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
+import { BACKEND_URL } from "../../../../config";
 import { useApplicationContext } from "../../ApplicationContext";
 import {
 	getContentKeyframes,
@@ -98,9 +98,7 @@ export const ModelWindow: FC<ModelWindowProps> = ({
 	useEffect(() => {
 		animateWindowOpen();
 		(async () => {
-			const response = await fetch(
-				`http://localhost:8080/model/${openedItem.id}`
-			);
+			const response = await fetch(`${BACKEND_URL}/model/${openedItem.id}`);
 			const contentLength = response.headers.get("content-length");
 			const totalLength = parseInt(contentLength, 10);
 

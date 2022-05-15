@@ -7,6 +7,7 @@ import {
 	useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { BACKEND_URL } from "../../config";
 import { ModelWindow } from "./Components/ModelWindow";
 
 type GalleryItem = {
@@ -51,7 +52,7 @@ const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
 	const [galleryItems, setGalleryItems] = useState<GalleryItem[] | undefined>();
 
 	useEffect(() => {
-		fetch("http://localhost:8080/models").then((res) =>
+		fetch(`${BACKEND_URL}/models`).then((res) =>
 			res.json().then((data) => setGalleryItems(data))
 		);
 	}, []);

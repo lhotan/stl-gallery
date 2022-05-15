@@ -1,15 +1,6 @@
-import { create } from "domain";
+import "dotenv/config";
 import express from "express";
-import {
-	existsSync,
-	mkdirSync,
-	readFileSync,
-	rm,
-	rmSync,
-	writeFileSync,
-} from "fs";
-import { Op } from "sequelize";
-import sqlite3 from "sqlite3";
+import { readFileSync } from "fs";
 import { Stream } from "stream";
 import { v4 as uuidv4 } from "uuid";
 import ModelEntry from "./Models/ModelEntry";
@@ -134,9 +125,7 @@ app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
 
-const thumbnailGenerator = new ThumbnailGenerator(
-	"http://localhost:3000/studio"
-);
+const thumbnailGenerator = new ThumbnailGenerator(process.env.STUDIO_URL);
 
 const generateMissingThumbnails = async () => {
 	await thumbnailGenerator.intializeBrowser();

@@ -1,4 +1,5 @@
 import { FC, useEffect, useRef, useState } from "react";
+import { BACKEND_URL } from "../../../../../config";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { ContentTitle, GridThumbnail, StyledListItem } from "./styled";
 
@@ -61,10 +62,7 @@ export const ModelGridItem: FC<ModelGridItemProps> = ({
 				disablePictureInPicture
 				onClick={(event) => event.preventDefault()}
 			>
-				<source
-					src={`http://localhost:8080/thumbnail/${id}`}
-					type="video/mp4"
-				/>
+				<source src={`${BACKEND_URL}/thumbnail/${id}`} type="video/mp4" />
 			</GridThumbnail>
 		</StyledListItem>
 	);
