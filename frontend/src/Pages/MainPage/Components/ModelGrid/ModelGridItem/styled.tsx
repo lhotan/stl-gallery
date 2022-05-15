@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 const ContentBackground = styled.div`
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 999;
@@ -17,8 +17,6 @@ const ContentBackground = styled.div`
 
 const GridContent = styled.div`
 	opacity: 0;
-	width: 90vw;
-	height: 90vh;
 	border-radius: 8px;
 	background-color: white;
 	box-shadow: 0 0 8px grey;
@@ -34,10 +32,17 @@ const GridThumbnail = styled.video`
 const ContentTitle = styled.p`
 	position: absolute;
 	bottom: 0;
-	right: 1rem;
+	right: 0.5rem;
+	left: 0.5rem;
 	font-size: 1.5rem;
 	font-weight: 400;
 	color: black;
+
+	background-color: #ffffffaa;
+	padding: 0.3rem;
+	border-radius: 8px;
+
+	margin-bottom: 0.5rem;
 `;
 
 const StyledListItem = styled.li<{ $isOpen: boolean; $shadowColor: string }>`

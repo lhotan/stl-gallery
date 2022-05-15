@@ -20,7 +20,7 @@ export const ModelGridItem: FC<ModelGridItemProps> = ({
 
 	const [isHover, setIsHover] = useState(false);
 
-	const { showModelWindow, windowOpen } = useApplicationContext();
+	const { showModelWindow, openedItem } = useApplicationContext();
 
 	useEffect(() => {
 		if (isHover) {
@@ -33,14 +33,22 @@ export const ModelGridItem: FC<ModelGridItemProps> = ({
 	const handleContentOpen = (event) => {
 		event.preventDefault();
 
-		showModelWindow({ openedItem: itemRef.current });
+		showModelWindow({
+			itemElement: itemRef.current,
+			item: {
+				color,
+				id,
+				thumbnail,
+				title,
+			},
+		});
 	};
 
 	return (
 		<StyledListItem
 			ref={itemRef}
 			onClick={handleContentOpen}
-			$isOpen={windowOpen}
+			$isOpen={Boolean(openedItem)}
 			$shadowColor={`#${color.split("0x").pop()}`}
 			onPointerEnter={() => setIsHover(true)}
 			onPointerLeave={() => setIsHover(false)}

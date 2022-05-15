@@ -1,6 +1,7 @@
 const getSlideKeyframes = ({
 	itemCoordinates: { x, y },
 	itemDimensions: { width, height },
+	color,
 }) => [
 	{
 		transform: `translate(${x}px, ${y}px)`,
@@ -13,8 +14,8 @@ const getSlideKeyframes = ({
 	},
 	{
 		width: "100vw",
-		height: "100vh",
-		backgroundColor: "rgba(255, 255, 255, 0.7)",
+		height: "100%",
+		backgroundColor: `${color}80`,
 		backdropFilter: "blur(5px)",
 	},
 ];

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const AppContainer = styled.div`
-	height: 100vh;
+	height: 100%;
 
 	display: grid;
 	grid-template-rows: 4.25rem min-content auto;

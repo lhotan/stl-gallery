@@ -17,24 +17,27 @@ type GalleryItem = {
 };
 
 type ShowModelWindowArgs = {
-	openedItem: HTMLLIElement;
+	itemElement: HTMLLIElement;
+	item: GalleryItem;
 };
 
 type ContextType = {
 	showModelWindow: (args: ShowModelWindowArgs) => Promise<void>;
-	windowOpen: boolean;
+	openedItem: GalleryItem;
 	galleryItems: GalleryItem[];
 };
 
 const ApplicationContext = createContext<ContextType>({
 	showModelWindow: undefined,
-	windowOpen: undefined,
+	openedItem: undefined,
 	galleryItems: [],
 });
 
 const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
 	children,
 }) => {
+	const [openedItem, setOpenedItem] = useState<GalleryItem>();
+
 	const [openedItemCoordinates, setOpenedItemCoordinates] = useState<{
 		x: number;
 		y: number;
@@ -47,36 +50,34 @@ const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
 
 	const [galleryItems, setGalleryItems] = useState<GalleryItem[] | undefined>();
 
-	const [windowOpen, setWindowOpen] = useState(false);
-
 	useEffect(() => {
 		fetch("http://localhost:8080/models").then((res) =>
 			res.json().then((data) => setGalleryItems(data))
 		);
 	}, []);
 
-	const handleWindowShow = ({ openedItem }: ShowModelWindowArgs) =>
+	const handleWindowShow = ({ itemElement, item }: ShowModelWindowArgs) =>
 		new Promise<void>((resolve) => {
-			const { x, y, width, height } = openedItem.getBoundingClientRect();
+			const { x, y, width, height } = itemElement.getBoundingClientRect();
 			setOpenedItemCoordinates({ x, y });
 			setOpenedItemDimensions({ width, height });
-			setWindowOpen(true);
+			setOpenedItem(item);
 		});
 
 	const handleWindowClose = () => {
-		setWindowOpen(false);
+		setOpenedItem(undefined);
 	};
 
 	return (
 		<ApplicationContext.Provider
 			value={{
 				showModelWindow: handleWindowShow,
-				windowOpen,
+				openedItem,
 				galleryItems,
 			}}
 		>
 			{children}
-			{windowOpen &&
+			{Boolean(openedItem) &&
 				createPortal(
 					<ModelWindow
 						onWindowClose={handleWindowClose}

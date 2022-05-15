@@ -117,6 +117,7 @@ app.get("/model/:id", async (req, res) => {
 
 		res.set("Content-disposition", "attachment; filename=" + id + ".stl");
 		res.set("Content-Type", "text/plain");
+		res.set("Content-Length", `${foundEntry.getDataValue("model").byteLength}`);
 
 		readStream.pipe(res);
 	} else {
