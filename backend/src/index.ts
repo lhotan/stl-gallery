@@ -12,7 +12,6 @@ import { Op } from "sequelize";
 import sqlite3 from "sqlite3";
 import { Stream } from "stream";
 import { v4 as uuidv4 } from "uuid";
-import createModelFrames from "./model/createModelFrames";
 import ModelEntry from "./Models/ModelEntry";
 import ThumbnailGenerator from "./ThumbnailGenerator";
 
@@ -59,6 +58,12 @@ app.get("/init", async (req, res) => {
 			color: data.color,
 		});
 	}
+
+	res.send("DONE");
+});
+
+app.get("/init-thumbnails", async (req, res) => {
+	await generateMissingThumbnails();
 
 	res.send("DONE");
 });
@@ -133,7 +138,7 @@ const thumbnailGenerator = new ThumbnailGenerator(
 	"http://localhost:3000/studio"
 );
 
-setTimeout(async () => {
+const generateMissingThumbnails = async () => {
 	await thumbnailGenerator.intializeBrowser();
 
 	console.log("[THUMBNAIL] Checking if any thumbnails need to be created");
@@ -230,4 +235,6 @@ setTimeout(async () => {
 			)}`
 		);
 	}
-}, 2000);
+};
+
+setTimeout(() => generateMissingThumbnails(), 2000);
