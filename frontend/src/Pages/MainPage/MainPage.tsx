@@ -13,7 +13,7 @@ export const MainPage = () => {
 			<StyledHeader>
 				<h1>STL Catalog</h1>
 				<div>
-					<p>Bob Placeholder</p>
+					<p id="user_name">Bob Placeholder</p>
 					<img src={profilePicture} alt="profile" />
 				</div>
 			</StyledHeader>

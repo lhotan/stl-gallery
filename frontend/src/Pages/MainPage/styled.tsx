@@ -34,6 +34,13 @@ const StyledHeader = styled.header`
 		height: 3.5rem;
 		border-radius: 100%;
 	}
+
+	// 🙈
+	@media only screen and (max-width: 600px) {
+		& #user_name {
+			display: none;
+		}
+	}
 `;
 
 const StyledSeparator = styled.hr`
