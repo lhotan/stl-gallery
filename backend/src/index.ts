@@ -9,7 +9,7 @@ import ThumbnailGenerator from "./ThumbnailGenerator";
 var cors = require("cors");
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT;
 
 type DefaultData = {
 	models: {
