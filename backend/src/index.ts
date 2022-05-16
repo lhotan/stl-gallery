@@ -226,4 +226,4 @@ const generateMissingThumbnails = async () => {
 	}
 };
 
-setTimeout(() => generateMissingThumbnails(), 2000);
+//setTimeout(() => generateMissingThumbnails(), 2000);

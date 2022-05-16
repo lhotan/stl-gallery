@@ -1,4 +1,5 @@
 node_modules
 app
 */**/yarn-error.log
+*/**/*.db
 .DS_Store

@@ -24,7 +24,9 @@ class ThumbnailGenerator {
 		this.tempDir = await mkdtemp(path.join(os.tmpdir(), "stl-gallery"));
 
 		this.browser = await puppeteer.launch({
-			headless: false,
+			headless: true,
+			executablePath: "/usr/bin/chromium",
+			args: ["--no-sandbox", "--disable-setuid-sandbox"],
 		});
 
 		this.page = await this.browser.newPage();
