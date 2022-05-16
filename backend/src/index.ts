@@ -22,7 +22,6 @@ type DefaultData = {
 };
 
 app.use(cors());
-app.use(express.static("static"));
 
 app.get("/init", async (req, res) => {
 	const defaultDataJson: DefaultData = JSON.parse(
@@ -225,5 +224,10 @@ const generateMissingThumbnails = async () => {
 		);
 	}
 };
+
+app.use(express.static("static"));
+app.get("*", (req, res) => {
+	res.sendFile("static/index.html");
+});
 
 //setTimeout(() => generateMissingThumbnails(), 2000);
