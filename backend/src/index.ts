@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import { readFileSync } from "fs";
+import path from "path";
 import { Stream } from "stream";
 import { v4 as uuidv4 } from "uuid";
 import ModelEntry from "./Models/ModelEntry";
@@ -120,6 +121,12 @@ app.get("/model/:id", async (req, res) => {
 	}
 });
 
+app.use(express.static(path.join(__dirname, "static")));
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "static/index.html"));
+});
+
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
@@ -224,10 +231,5 @@ const generateMissingThumbnails = async () => {
 		);
 	}
 };
-
-app.use(express.static("static"));
-app.get("*", (req, res) => {
-	res.sendFile("static/index.html");
-});
 
 //setTimeout(() => generateMissingThumbnails(), 2000);

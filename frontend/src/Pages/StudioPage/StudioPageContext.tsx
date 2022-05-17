@@ -1,4 +1,4 @@
-import { createContext, FC, useContext, useEffect, useState } from "react";
+import { createContext, FC, useContext, useState } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 type ContextType = {
@@ -19,7 +19,6 @@ const StudioPageContextProvider: FC<{ children: any }> = ({ children }) => {
 	const [cameraOriginalAngle, setCameraOriginalAngle] = useState(0);
 	const [cameraControls, setCameraControls] = useState<OrbitControls>();
 
-	console.log(cameraControls);
 	return (
 		<StudioPageContext.Provider
 			value={{

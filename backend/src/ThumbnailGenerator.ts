@@ -24,14 +24,15 @@ class ThumbnailGenerator {
 		this.tempDir = await mkdtemp(path.join(os.tmpdir(), "stl-gallery"));
 
 		this.browser = await puppeteer.launch({
-			headless: true,
-			executablePath: "/usr/bin/chromium",
+			headless: false,
 			args: ["--no-sandbox", "--disable-setuid-sandbox"],
 		});
 
 		this.page = await this.browser.newPage();
 
 		await this.page.goto(this.studioUrl);
+
+		console.log("[CHROMIUM] Chromium initialized");
 	}
 
 	public async uploadModel({ id, model, color }: ModelEntryInput) {
@@ -64,7 +65,9 @@ class ThumbnailGenerator {
 		}
 
 		// wait for model to load
+		await this.page.waitForSelector("#studio-canvas");
 		await this.page.waitForTimeout(500);
+		await this.page.waitForNetworkIdle();
 
 		if (color) {
 			await this.page.evaluate((color) => {
