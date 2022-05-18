@@ -25,4 +25,10 @@ const StyledList = styled.ul`
 	}
 `;
 
-export { StyledList };
+const NoItemsContainer = styled.div`
+	display: grid;
+	align-items: center;
+	justify-content: center;
+`;
+
+export { StyledList, NoItemsContainer };

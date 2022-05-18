@@ -2,7 +2,7 @@ import { debounce, times } from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useApplicationContext } from "../../../ApplicationContext";
 import { ModelGridItem } from "../ModelGridItem";
-import { StyledList } from "./styled";
+import { NoItemsContainer, StyledList } from "./styled";
 
 export const ModelGrid = () => {
 	const gridRef = useRef<HTMLUListElement | undefined>();
@@ -61,6 +61,10 @@ export const ModelGrid = () => {
 			}),
 		[gridItemCount, galleryItems]
 	);
+
+	if (!gridItems.length) {
+		return <NoItemsContainer>No items...</NoItemsContainer>;
+	}
 
 	return <StyledList ref={gridRef}>{!isResizing && gridItems}</StyledList>;
 };

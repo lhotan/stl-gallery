@@ -4,43 +4,18 @@ const AppContainer = styled.div`
 	height: 100%;
 
 	display: grid;
-	grid-template-rows: 4.25rem min-content auto;
+	grid-template-rows: auto min-content 1fr;
 `;
 
 const StyledHeader = styled.header`
-	padding: 0.25rem 2rem;
-
+	padding-top: 0.5rem;
+	padding-bottom: 0.25rem;
+	width: 95%;
+	justify-self: center;
 	display: grid;
 	grid-auto-flow: column;
 	justify-content: space-between;
-
-	& h1 {
-		margin: unset;
-		font-size: 2rem;
-		padding: 0.5rem;
-	}
-
-	& div {
-		display: grid;
-		grid-auto-flow: column;
-		align-items: center;
-		font-size: 1.5rem;
-		gap: 1rem;
-	}
-
-	& img {
-		margin-right: 2rem;
-		width: 3.5rem;
-		height: 3.5rem;
-		border-radius: 100%;
-	}
-
-	// 🙈
-	@media only screen and (max-width: 600px) {
-		& #user_name {
-			display: none;
-		}
-	}
+	align-items: center;
 `;
 
 const StyledSeparator = styled.hr`
