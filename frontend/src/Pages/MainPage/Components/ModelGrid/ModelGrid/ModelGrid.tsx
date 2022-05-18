@@ -62,7 +62,7 @@ export const ModelGrid = () => {
 		[gridItemCount, galleryItems]
 	);
 
-	if (!gridItems.length) {
+	if (!galleryItems?.length) {
 		return <NoItemsContainer>No items...</NoItemsContainer>;
 	}
 

@@ -1,4 +1,4 @@
-import { FC, FormEvent, InputHTMLAttributes, useRef } from "react";
+import { FC, FormEvent, useRef } from "react";
 import { GithubPicker } from "react-color";
 import styled, { css } from "styled-components";
 import NewModelRenderer from "./ModelUploadRenderer";
@@ -8,6 +8,7 @@ import {
 	useRenderer,
 	useUpload,
 } from "./Contexts";
+import { RenderCover } from "./RenderCover";
 
 const colors = [
 	"#B80000",
@@ -47,21 +48,6 @@ const StyledMain = styled.main<{ $isRendering }>`
 		`}
 `;
 
-const RenderCover = styled.div`
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: white;
-
-	display: grid;
-	justify-content: center;
-	align-items: center;
-
-	z-index: 999;
-`;
-
 const StyledForm = styled.form`
 	display: grid;
 	grid-auto-flow: column;
@@ -75,19 +61,20 @@ const FormInputContainer = styled.span`
 
 const NewModelPage: FC = () => {
 	const { isRendering } = useRenderer();
-	const { renderModel, prepareCanvas, setColor, model } = useUpload();
+	const { renderModel, setColor, model, setTitle } = useUpload();
 	const titleRef = useRef<HTMLInputElement>();
 
 	const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		console.log(titleRef.current.value);
+
+		setTitle(titleRef.current.value);
 
 		renderModel();
 	};
 
 	return (
 		<StyledMain $isRendering={isRendering}>
-			{/* 	{prepareCanvas && <RenderCover>Render in progress...</RenderCover>} */}
+			<RenderCover />
 			<StyledForm onSubmit={handleFormSubmit}>
 				<FormInputContainer>
 					<span>
