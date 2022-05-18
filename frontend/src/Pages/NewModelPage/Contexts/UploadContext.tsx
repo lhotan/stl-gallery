@@ -56,11 +56,9 @@ const UploadContextProvider = ({ children }) => {
 		const { thumbnail, videoThumbnail } = await renderThumbnails();
 
 		console.log(thumbnail, videoThumbnail);
-		//FileSaver.saveAs(new Blob([videoThumbnail.buffer]), "new-thumbnail.mp4");
 
 		setThumbnail(thumbnail);
 		setVideoThumbnail(videoThumbnail);
-		setPrepareCanvas(false);
 	};
 
 	const handleCanvasReady = () => {

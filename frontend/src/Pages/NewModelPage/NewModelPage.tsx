@@ -35,9 +35,9 @@ const StyledMain = styled.main<{ $isRendering }>`
 	position: relative;
 
 	padding-top: 1rem;
-	grid-template-rows: 1fr;
-	grid-template-columns: minmax(200px, 800px) auto;
-	gap: 1rem;
+	grid-template-rows: min-content 600px;
+	grid-template-columns: 100%;
+	gap: 2rem;
 
 	${({ $isRendering }) =>
 		$isRendering &&
@@ -62,26 +62,38 @@ const RenderCover = styled.div`
 	z-index: 999;
 `;
 
+const StyledForm = styled.form`
+	display: grid;
+	grid-auto-flow: column;
+	justify-content: space-between;
+`;
+
+const FormInputContainer = styled.span`
+	display: grid;
+	gap: 1rem;
+`;
+
 const NewModelPage: FC = () => {
 	const { isRendering } = useRenderer();
-	const { renderModel, prepareCanvas, setColor } = useUpload();
+	const { renderModel, prepareCanvas, setColor, model } = useUpload();
 	const titleRef = useRef<HTMLInputElement>();
 
 	const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
 		console.log(titleRef.current.value);
+
 		renderModel();
 	};
 
 	return (
 		<StyledMain $isRendering={isRendering}>
-			{prepareCanvas && <RenderCover>Render in progress...</RenderCover>}
-			<NewModelRenderer />
-			<aside>
-				<form onSubmit={handleFormSubmit}>
-					<label>Name: </label>
-					<input ref={titleRef} required minLength={3} maxLength={20} />
+			{/* 	{prepareCanvas && <RenderCover>Render in progress...</RenderCover>} */}
+			<StyledForm onSubmit={handleFormSubmit}>
+				<FormInputContainer>
+					<span>
+						<label>Name: </label>
+						<input ref={titleRef} required minLength={3} maxLength={20} />
+					</span>
 					<GithubPicker
 						triangle="hide"
 						colors={colors}
@@ -89,9 +101,12 @@ const NewModelPage: FC = () => {
 							setColor(parseInt(hex.replace("#", "0x")))
 						}
 					/>
-					<button type="submit">Upload</button>
-				</form>
-			</aside>
+				</FormInputContainer>
+				<button type="submit" disabled={!model}>
+					Upload new model
+				</button>
+			</StyledForm>
+			<NewModelRenderer />
 		</StyledMain>
 	);
 };
