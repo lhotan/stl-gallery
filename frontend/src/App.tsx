@@ -12,8 +12,8 @@ import {
 	StyledSeparator,
 } from "./Pages/MainPage/styled";
 import profilePicture from "./Assets/profile.png";
-import { FC, ReactNode } from "react";
-import { NewItemPage } from "./Pages/NewItemPage";
+import { FC } from "react";
+import { NewModelPage } from "./Pages/NewModelPage";
 
 const Layout: FC = () => (
 	<ApplicationContextProvider>
@@ -36,7 +36,7 @@ const App = () => (
 		<Routes>
 			<Route element={<Layout />}>
 				<Route path="/" element={<MainPage />} />
-				<Route path="/new" element={<NewItemPage />} />
+				<Route path="/new" element={<NewModelPage />} />
 			</Route>
 		</Routes>
 	</Router>

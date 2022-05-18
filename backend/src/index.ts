@@ -1,62 +1,18 @@
 import "dotenv/config";
 import express from "express";
-import { readFileSync } from "fs";
 import path from "path";
 import { Stream } from "stream";
-import { v4 as uuidv4 } from "uuid";
 import ModelEntry from "./Models/ModelEntry";
-import ThumbnailGenerator from "./ThumbnailGenerator";
 
 var cors = require("cors");
 
 const app = express();
 const port = process.env.PORT;
 
-type DefaultData = {
-	models: {
-		title: string;
-		path: string;
-		thumbnail: string;
-		lowResThumbnail: string;
-		color: string;
-	}[];
-};
-
 app.use(cors());
 
 app.get("/init", async (req, res) => {
-	const defaultDataJson: DefaultData = JSON.parse(
-		readFileSync("./data/default.json").toString()
-	);
-
-	const defaultData = defaultDataJson.models.map((model) => {
-		const modelBlobs = readFileSync("./data/" + model.path);
-
-		return {
-			title: model.title,
-			models: modelBlobs,
-			thumbnail: undefined,
-			color: model.color,
-		};
-	});
-
 	await ModelEntry.sync({ force: true });
-	for await (const data of defaultData) {
-		await ModelEntry.create({
-			id: uuidv4(),
-			title: data.title,
-			model: data.models,
-			color: data.color,
-		});
-	}
-
-	res.send("DONE");
-});
-
-app.get("/init-thumbnails", async (req, res) => {
-	await generateMissingThumbnails();
-
-	res.send("DONE");
 });
 
 app.get("/models", async (req, res) => {
@@ -121,6 +77,12 @@ app.get("/model/:id", async (req, res) => {
 	}
 });
 
+app.post("/model", async (req, res) => {
+	await ModelEntry.create({});
+
+	res.sendStatus(200);
+});
+
 app.use(express.static(path.join(__dirname, "static")));
 
 app.get("*", (req, res) => {
@@ -130,106 +92,3 @@ app.get("*", (req, res) => {
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
 });
-
-const thumbnailGenerator = new ThumbnailGenerator(process.env.STUDIO_URL);
-
-const generateMissingThumbnails = async () => {
-	await thumbnailGenerator.intializeBrowser();
-
-	console.log("[THUMBNAIL] Checking if any thumbnails need to be created");
-
-	const entriesWithoutThumbnails = await ModelEntry.findAll({
-		attributes: ["id", "color", "title"],
-		where: {
-			thumbnail: null,
-		},
-	});
-
-	for await (const entry of entriesWithoutThumbnails) {
-		console.log(
-			`[THUMBNAIL] Generating thumbnail for ${entry.getDataValue("title")}`
-		);
-
-		const modelEntry = await ModelEntry.findOne({
-			attributes: ["model"],
-			where: {
-				id: entry.getDataValue("id"),
-			},
-		});
-
-		const data = {
-			...entry.get(),
-			...modelEntry.get(),
-		};
-
-		await thumbnailGenerator.uploadModel(data);
-		const thumbnail = await thumbnailGenerator.createThumbnail();
-		await ModelEntry.update(
-			{
-				thumbnail,
-			},
-			{
-				where: {
-					id: entry.getDataValue("id"),
-				},
-			}
-		);
-
-		console.log(
-			`[THUMBNAIL] Done thumbnail for ${entry.getDataValue("title")}`
-		);
-	}
-
-	console.log(
-		"[VIDEO THUMBNAIL] Checking if any video thumbnails need to be created"
-	);
-
-	const entriesWithoutVideoThumbnails = await ModelEntry.findAll({
-		attributes: ["id", "color", "title"],
-		where: {
-			videoThumbnail: null,
-		},
-	});
-
-	for await (const entry of entriesWithoutVideoThumbnails) {
-		console.log(
-			`[VIDEO THUMBNAIL] Generating video thumbnail for ${entry.getDataValue(
-				"title"
-			)}`
-		);
-
-		const modelEntry = await ModelEntry.findOne({
-			attributes: ["model"],
-			where: {
-				id: entry.getDataValue("id"),
-			},
-		});
-
-		const data = {
-			...entry.get(),
-			...modelEntry.get(),
-		};
-
-		await thumbnailGenerator.uploadModel(data);
-		const videoThumbnail = await thumbnailGenerator.createVideoThumbnail();
-
-		await ModelEntry.update(
-			{
-				videoThumbnail,
-			},
-			{
-				where: {
-					id: entry.getDataValue("id"),
-				},
-			}
-		);
-
-		console.log(
-			`[VIDEO THUMBNAIL] Done generating video thumbnail for ${entry.getDataValue(
-				"title"
-			)}`
-		);
-	}
-};
-
-//setTimeout(() => generateMissingThumbnails(), 2000);
