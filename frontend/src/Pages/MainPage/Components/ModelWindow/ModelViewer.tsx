@@ -45,7 +45,7 @@ const ModelViewer: FC<ModelViewerProps> = ({ model }) => {
 		openedItem: { color },
 	} = useApplicationContext();
 
-	const parsedColor = parseInt(color);
+	const parsedColor = parseInt("0x" + color);
 
 	const [loadedModel, setLoadedModel] = useState<BufferGeometry>();
 

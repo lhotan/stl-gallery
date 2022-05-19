@@ -3,3 +3,4 @@ frames
 build
 sqlite.db
 .DS_Store
+.env

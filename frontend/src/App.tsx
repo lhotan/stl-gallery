@@ -15,8 +15,8 @@ import {
 } from "./Pages/MainPage/styled";
 import { FC } from "react";
 import { NewModelPage } from "./Pages/NewModelPage";
-import { useUser } from "./Shared/UserContext";
 import styled from "styled-components";
+import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 
 const StyledLink = styled(Link)`
 	&:visited {
@@ -55,16 +55,16 @@ const HeadingUserPicture = styled.img`
 `;
 
 const Layout: FC = () => {
-	const { user, logout, login } = useUser();
+	const { loginWithRedirect, user, logout, isAuthenticated } = useAuth0();
 
-	const handleLogout = (event) => {
+	const handleLogout = async (event) => {
 		event.preventDefault();
 		logout();
 	};
 
-	const handleLogin = (event) => {
+	const handleLogin = async (event) => {
 		event.preventDefault();
-		login();
+		await loginWithRedirect();
 	};
 
 	return (
@@ -74,7 +74,7 @@ const Layout: FC = () => {
 					<StyledLink to="/">
 						<StyledHeading>STL Catalog</StyledHeading>
 					</StyledLink>
-					{user ? (
+					{isAuthenticated ? (
 						<>
 							<StyledNav>
 								<StyledLink to="/new">New model</StyledLink>
@@ -83,7 +83,7 @@ const Layout: FC = () => {
 								<HeadingUserName>{user.name}</HeadingUserName>
 								<StyledLink to="/logout" onClick={handleLogout}>
 									<HeadingUserPicture
-										src={user.picture}
+										src={`/proxy/${encodeURIComponent(user.picture)}`}
 										alt="profile"
 										referrerPolicy="no-referrer"
 									/>
@@ -106,17 +106,23 @@ const Layout: FC = () => {
 };
 
 const ProtectedRoute: FC = () => {
-	const { user } = useUser();
+	const { isAuthenticated } = useAuth0();
 
-	if (!user) {
+	if (!isAuthenticated) {
 		return <Navigate to="/" />;
 	}
 
 	return <Outlet />;
 };
 
-const App = () => {
-	return (
+const App = () => (
+	<Auth0Provider
+		domain={process.env.REACT_APP_AUTH0_CLIENT_DOMAIN}
+		clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+		cacheLocation={"localstorage"}
+		useRefreshTokens={true}
+		redirectUri={window.location.origin}
+	>
 		<Router>
 			<Routes>
 				<Route element={<Layout />}>
@@ -127,7 +133,7 @@ const App = () => {
 				</Route>
 			</Routes>
 		</Router>
-	);
-};
+	</Auth0Provider>
+);
 
 export default App;

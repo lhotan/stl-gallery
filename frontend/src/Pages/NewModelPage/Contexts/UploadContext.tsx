@@ -6,9 +6,11 @@ import {
 	useMemo,
 	useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import { BufferGeometry } from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { BACKEND_URL } from "../../../config";
+import { useApplicationContext } from "../../MainPage/ApplicationContext";
 import { useRenderer } from "./RendererContext";
 
 type UploadStage =
@@ -45,24 +47,16 @@ const UploadContext = createContext<ContextType>({
 	uploadStage: undefined,
 });
 
-type FetchBody = {
-	title: string;
-	color: string;
-	model: ArrayBuffer;
-	thumbnail: Uint8Array;
-	videoThumbnail: Uint8Array;
-};
-
 const UploadContextProvider = ({ children }) => {
 	const [stage, setStage] = useState<UploadStage>("none");
-	const [thumbnail, setThumbnail] = useState<Uint8Array>();
-	const [videoThumbnail, setVideoThumbnail] = useState<Uint8Array>();
 	const [title, setTitle] = useState<string>();
 	const [color, setColor] = useState<number>(0xffffff);
 	const [model, setModel] = useState<BufferGeometry>();
 	const [stlFile, setStlFile] = useState<ArrayBuffer>();
 	const [prepareCanvas, setPrepareCanvas] = useState(false);
+	const navigate = useNavigate();
 
+	const { loadGalleryItems } = useApplicationContext();
 	const { renderThumbnails } = useRenderer();
 
 	const handleModelUpload = () => {
@@ -97,6 +91,12 @@ const UploadContextProvider = ({ children }) => {
 		await uploadModel(thumbnail, videoThumbnail);
 
 		setStage("done-uploading");
+
+		await loadGalleryItems();
+
+		setTimeout(() => {
+			navigate("/");
+		}, 500);
 	};
 
 	const uploadModel = useCallback(

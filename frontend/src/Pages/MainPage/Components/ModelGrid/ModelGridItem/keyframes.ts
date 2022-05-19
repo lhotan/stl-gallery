@@ -15,7 +15,6 @@ const getSlideKeyframes = ({
 	{
 		width: "100vw",
 		height: "100%",
-		backgroundColor: `${color}80`,
 		backdropFilter: "blur(5px)",
 	},
 ];

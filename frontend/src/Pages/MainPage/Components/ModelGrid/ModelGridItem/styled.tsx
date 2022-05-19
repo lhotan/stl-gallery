@@ -25,7 +25,6 @@ const GridContent = styled.div`
 const GridThumbnail = styled.video`
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
 	border-radius: 8px;
 `;
 
@@ -46,10 +45,6 @@ const ContentTitle = styled.p`
 `;
 
 const StyledListItem = styled.li<{ $isOpen: boolean; $shadowColor: string }>`
-	height: 100%;
-
-	border-radius: 8px;
-
 	&:first-of-type {
 		grid-column: 1 / 3;
 		grid-row: 1 / 3;
@@ -64,9 +59,8 @@ const StyledListItem = styled.li<{ $isOpen: boolean; $shadowColor: string }>`
 	`}
 
 	transition: all 200ms linear;
-
-	display: grid;
 	position: relative;
+	aspect-ratio: 4/3; // experimental, works perfectly here
 
 	${({ $isOpen }) =>
 		$isOpen
@@ -77,7 +71,6 @@ const StyledListItem = styled.li<{ $isOpen: boolean; $shadowColor: string }>`
 					&:hover {
 						cursor: pointer;
 						transform: scale(1.04);
-						background-color: red;
 						z-index: 2;
 					}
 			  `}

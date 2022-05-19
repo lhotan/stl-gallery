@@ -17,12 +17,12 @@ const port = process.env.PORT;
 app.use(cors());
 app.use(express.json({ limit: "100MB" }));
 
-app.get("/init", async (req, res) => {
+app.get("/api/init", async (req, res) => {
 	await ModelEntry.sync({ force: true });
 	res.send(200);
 });
 
-app.get("/models", async (req, res) => {
+app.get("/api/models", async (req, res) => {
 	const entries = await ModelEntry.findAll({
 		attributes: ["id", "title", "color", "thumbnail"],
 	});
@@ -35,7 +35,7 @@ app.get("/models", async (req, res) => {
 	res.json(entriesWithB64Images);
 });
 
-app.get("/thumbnail/:id", async (req, res) => {
+app.get("/api/thumbnail/:id", async (req, res) => {
 	const id = req.params["id"];
 
 	const foundEntry = await ModelEntry.findOne({
@@ -59,7 +59,7 @@ app.get("/thumbnail/:id", async (req, res) => {
 	}
 });
 
-app.get("/model/:id", async (req, res) => {
+app.get("/api/model/:id", async (req, res) => {
 	const id = req.params["id"];
 
 	const foundEntry = await ModelEntry.findOne({
@@ -90,13 +90,14 @@ const uploadFields = upload.fields([
 	{ name: "videoThumbnail", maxCount: 1 },
 ]);
 
-app.post("/model", uploadFields, async (req, res) => {
+app.post("/api/model", uploadFields, async (req, res) => {
 	const { title, color } = req.body as { title: string; color: string };
 	console.log(req.files, req.body);
 
 	const model = req.files["model"][0] as Express.Multer.File;
 	const thumbnail = req.files["thumbnail"][0] as Express.Multer.File;
 	const videoThumbnail = req.files["videoThumbnail"][0] as Express.Multer.File;
+
 	await ModelEntry.create({
 		id: uuidv4(),
 		title,

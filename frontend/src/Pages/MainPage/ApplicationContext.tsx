@@ -2,6 +2,7 @@ import {
 	createContext,
 	FC,
 	ReactNode,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -24,6 +25,7 @@ type ShowModelWindowArgs = {
 
 type ContextType = {
 	showModelWindow: (args: ShowModelWindowArgs) => Promise<void>;
+	loadGalleryItems: () => Promise<void>;
 	openedItem: GalleryItem;
 	galleryItems: GalleryItem[];
 };
@@ -32,6 +34,7 @@ const ApplicationContext = createContext<ContextType>({
 	showModelWindow: undefined,
 	openedItem: undefined,
 	galleryItems: [],
+	loadGalleryItems: undefined,
 });
 
 const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
@@ -50,11 +53,15 @@ const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
 	}>({ width: 0, height: 0 });
 
 	const [galleryItems, setGalleryItems] = useState<GalleryItem[] | undefined>();
+	const loadItems = useCallback(async () => {
+		const res = await fetch(`${BACKEND_URL}/models`);
+		const items = (await res.json()) as GalleryItem[];
+		console.log(items);
+		setGalleryItems(() => items);
+	}, []);
 
 	useEffect(() => {
-		fetch(`${BACKEND_URL}/models`).then((res) =>
-			res.json().then((data) => setGalleryItems(data))
-		);
+		loadItems();
 	}, []);
 
 	const handleWindowShow = ({ itemElement, item }: ShowModelWindowArgs) =>
@@ -75,6 +82,7 @@ const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
 				showModelWindow: handleWindowShow,
 				openedItem,
 				galleryItems,
+				loadGalleryItems: loadItems,
 			}}
 		>
 			{children}

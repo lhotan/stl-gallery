@@ -4,25 +4,13 @@ const StyledList = styled.ul`
 	list-style-type: none;
 
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(15vw, 1fr));
-	grid-template-rows: repeat(auto-fit, minmax(16rem, 1fr));
-	padding-right: 2rem;
-
-	min-height: 60rem;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	grid-auto-rows: min-content;
+	min-height: 30rem;
 
 	gap: 0.75rem;
 	padding: 1rem 1rem;
-	align-items: center;
-
-	@media only screen and (max-width: 800px) {
-		grid-template-columns: repeat(4, minmax(15vw, 1fr));
-	}
-	@media only screen and (max-width: 600px) {
-		grid-template-columns: repeat(3, minmax(15vw, 1fr));
-	}
-	@media only screen and (max-width: 400px) {
-		grid-template-columns: repeat(2, minmax(15vw, 1fr));
-	}
+	align-items: start;
 `;
 
 const NoItemsContainer = styled.div`
