@@ -7,7 +7,7 @@ import {
 	Navigate,
 } from "react-router-dom";
 import { MainPage } from "./Pages/MainPage";
-import { ApplicationContextProvider } from "./Pages/MainPage/ApplicationContext";
+import { ApplicationContextProvider } from "./Pages/MainPage/Contexts/ApplicationContext";
 import {
 	AppContainer,
 	StyledHeader,

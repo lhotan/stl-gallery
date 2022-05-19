@@ -5,6 +5,7 @@ import { Stream } from "stream";
 import { v4 as uuidv4 } from "uuid";
 import ModelEntry from "./Models/ModelEntry";
 import multer from "multer";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -15,7 +16,24 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(cors());
-app.use(express.json({ limit: "100MB" }));
+
+app.use(
+	"/proxy/:url",
+	createProxyMiddleware({
+		changeOrigin: true,
+		pathRewrite: { "^/proxy.*": "" },
+		router: (req) => {
+			return req.params.url;
+		},
+	})
+);
+
+// this is required to make SharedArrayBuffer that ffmpeg uses work, everything needs to be on the same origin
+app.use(function (request, response, next) {
+	response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+	response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+	next();
+});
 
 app.get("/api/init", async (req, res) => {
 	await ModelEntry.sync({ force: true });

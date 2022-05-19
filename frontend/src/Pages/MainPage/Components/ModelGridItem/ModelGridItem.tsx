@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { BACKEND_URL } from "../../../../../config";
-import { useApplicationContext } from "../../../ApplicationContext";
+import { BACKEND_URL } from "../../../../config";
+import { useApplicationContext } from "../../Contexts/ApplicationContext";
 import { ContentTitle, GridThumbnail, StyledListItem } from "./styled";
 
 type ModelGridItemProps = {

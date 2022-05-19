@@ -8,8 +8,8 @@ import {
 	useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { BACKEND_URL } from "../../config";
-import { ModelWindow } from "./Components/ModelWindow";
+import { BACKEND_URL } from "../../../config";
+import { ModelWindow } from "../Components/ModelWindow";
 
 type GalleryItem = {
 	id: string;
@@ -62,6 +62,7 @@ const ApplicationContextProvider: FC<{ children: ReactNode }> = ({
 
 	useEffect(() => {
 		loadItems();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleWindowShow = ({ itemElement, item }: ShowModelWindowArgs) =>

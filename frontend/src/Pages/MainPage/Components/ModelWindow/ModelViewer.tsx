@@ -4,7 +4,7 @@ import { FC, Suspense, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { BufferGeometry, Color } from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
-import { useApplicationContext } from "../../ApplicationContext";
+import { useApplicationContext } from "../../Contexts/ApplicationContext";
 
 const ModelViewerWrapper = styled.div`
 	width: 80vw;

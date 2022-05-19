@@ -1,16 +1,9 @@
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
-} from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BufferGeometry } from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 import { BACKEND_URL } from "../../../config";
-import { useApplicationContext } from "../../MainPage/ApplicationContext";
+import { useApplicationContext } from "../../MainPage/Contexts/ApplicationContext";
 import { useRenderer } from "./RendererContext";
 
 type UploadStage =

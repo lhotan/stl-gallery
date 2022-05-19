@@ -1,14 +1,14 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { BACKEND_URL } from "../../../../config";
-import { useApplicationContext } from "../../ApplicationContext";
+import { useApplicationContext } from "../../Contexts/ApplicationContext";
 import {
 	getContentKeyframes,
 	getSlideKeyframes,
-} from "../ModelGrid/ModelGridItem/keyframes";
+} from "../ModelGridItem/keyframes";
 import {
 	ContentBackground,
 	GridContent as ContentWrapper,
-} from "../ModelGrid/ModelGridItem/styled";
+} from "../ModelGridItem/styled";
 import Loading from "./Loading";
 import ModelViewer from "./ModelViewer";
 
@@ -129,6 +129,7 @@ export const ModelWindow: FC<ModelWindowProps> = ({
 
 			setModel(blob);
 		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleWindowClose = async (event) => {
