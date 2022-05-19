@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 import ModelEntry from "./Models/ModelEntry";
 import multer from "multer";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { readFileSync } from "fs";
+import http from "http";
+import https from "https";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -14,6 +17,27 @@ var cors = require("cors");
 
 const app = express();
 const port = process.env.PORT;
+const httpsPort = process.env.SSL_PORT;
+
+// Certificate
+const privateKey = readFileSync(
+	"/etc/letsencrypt/live/gallery.lhotan.net/privkey.pem",
+	"utf8"
+);
+const certificate = readFileSync(
+	"/etc/letsencrypt/live/gallery.lhotan.net/cert.pem",
+	"utf8"
+);
+const ca = readFileSync(
+	"/etc/letsencrypt/live/gallery.lhotan.net/chain.pem",
+	"utf8"
+);
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca,
+};
 
 app.use(cors());
 
@@ -134,6 +158,13 @@ app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "static/index.html"));
 });
 
-app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(port, () => {
+	console.log(`HTTP Server running on port ${port}`);
+});
+
+httpsServer.listen(httpsPort, () => {
+	console.log(`HTTPS Server running on port ${httpsPort}`);
 });
