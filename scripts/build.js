@@ -20,6 +20,5 @@ const exec = util.promisify(require("child_process").exec);
 		cp("frontend/build", "app/static", { recursive: true }),
 		cp("backend/build", "app", { recursive: true }),
 		cp("backend/package.json", "app/package.json"),
-		cp("backend/data", "app/data", { recursive: true }),
 	]);
 })();
